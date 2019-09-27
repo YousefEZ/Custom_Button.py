@@ -39,6 +39,8 @@ class Round_Button(tk.Label):
         self.change_to_static = False
 
         self.create_custom_image() #Create static and transformed buttons
+        self.create_lower_button() #Creates Lower Button
+        self.connect_function()
         self.configure(image=self.Images[9]) #Inserts static button images
 
         self.bind("<Enter>", self.on_enter) #Hover on capabilities
@@ -79,7 +81,7 @@ class Round_Button(tk.Label):
             self.image_drawer[i].rectangle((self.aspect_ratio[0] - int(5.5 * self.multi), 0, self.aspect_ratio[0], self.aspect_ratio[1]),fill=(0, 0, 0, 0))
             self.image_drawer[i].ellipse((self.aspect_ratio[0] - int(10 * self.multi), 0, self.aspect_ratio[0], self.aspect_ratio[1]),fill=colour)
 
-            self.image_drawer[i].rectangle((0, 0, int(5 * self.multi), int(10 * self.multi)), fill=(0, 0, 0, 0))
+            self.image_drawer[i].rectangle((0, 0, int(5.5 * self.multi), int(10 * self.multi)), fill=(0, 0, 0, 0))
             self.image_drawer[i].ellipse((0, 0, int(10 * self.multi), int(10 * self.multi)), fill=(colour))
 
 
@@ -88,6 +90,59 @@ class Round_Button(tk.Label):
                 self.image_drawer[i].text(coords[x], Lines[x], fill=textcolour, font=font, align='center')
 
         self.Images = [ImageTk.PhotoImage(self.images[i]) for i in range (10)]
+
+    def create_lower_button(self):
+        multi_d = 0.25
+        multi = self.multi  - multi_d
+        aspect_ratio = (int(35 * multi), int(10*multi))
+        decrement = -1
+        while True:
+            # < decrement > : Used for lowering the font size so that the text doesn't go off the screen.
+            decrement += 1
+            font = ImageFont.truetype("Assets/GentiumBasic-Bold.ttf", int(5.5 * multi) - decrement,encoding="unic")
+            coords, Lines, line_height = self.draw_multiple_line_text(self.text, font, int(36 * multi),int(2 * multi), 12)
+            if coords[-1][1] + line_height + 5 > self.aspect_ratio[1]-(10*multi_d):
+                continue
+            break
+
+
+        self.lower_button = Image.new('RGBA', (aspect_ratio))
+
+        # Initialising the draw the ImageDraw.Draw object
+        self.lower_drawer = ImageDraw.Draw(self.lower_button)
+
+        colour = (self.image_colours[0][0], self.image_colours[0][1], self.image_colours[0][2])
+        textcolour = (self.text_colours[0][0], self.text_colours[0][1], self.text_colours[0][2])
+
+        # Creates the base for both images (Rectangles)
+
+        self.lower_drawer.rectangle((0, 0, aspect_ratio[0], aspect_ratio[1]), fill=colour)
+
+        # Create a rectangle to remove the unwanted areas of colour, and adds an elipses to give a round effect.
+        # 2 on both sides for 2 images.
+
+        self.lower_drawer.rectangle((aspect_ratio[0] - int(5.5*multi), 0, aspect_ratio[0], aspect_ratio[1]),fill=(0, 0, 0, 0))
+        self.lower_drawer.ellipse((aspect_ratio[0] - int(10*multi), 0, aspect_ratio[0], aspect_ratio[1]), fill=colour)
+
+        self.lower_drawer.rectangle((0, 0, int(5.5 * multi), int(10 * multi)), fill=(0, 0, 0, 0))
+        self.lower_drawer.ellipse((0, 0, int(10 * multi), int(10 * multi)), fill=(colour))
+
+        for x in range(len(coords)):
+            self.lower_drawer.text(coords[x], Lines[x], fill=textcolour, font=font, align='center')
+
+        delta_x = (self.aspect_ratio[0] - aspect_ratio[0])//2
+        delta_y = (self.aspect_ratio[1] - aspect_ratio[1])//2
+
+
+        self.lower_button = self.lower_button.resize(size=(self.aspect_ratio[0] - delta_x*2, self.aspect_ratio[1] - delta_y*2))
+
+        self.Button = Image.new('RGBA', (self.aspect_ratio))
+
+        self.Button.paste(self.lower_button, (delta_x, delta_y, self.aspect_ratio[0] - delta_x, self.aspect_ratio[1] - delta_y), self.lower_button)
+
+        self.lower_button = ImageTk.PhotoImage(self.Button)
+
+
 
     def draw_multiple_line_text(self, text, font, text_start_width, text_start_height, Line_Width):
         ## Used for creating multi-line text. Splits the text across multiple lines if the text crosses the line width.
@@ -147,13 +202,18 @@ class Round_Button(tk.Label):
         t1 = Thread(target=self.change_tsc)
         t1.start()
 
-    def connect_function(self, function):
+    def connect_function(self, function=lambda:None):
         #Binds the button to a function.
 
         def connector(*args):
+            self.configure(image=self.lower_button)
             function()
 
-        self.bind("<Button-1>", connector)
+        def disconnector(*args):
+            self.configure(image=self.Images[0])
+
+        self.bind("<ButtonPress-1>", connector)
+        self.bind("<ButtonRelease-1>", disconnector)
 
 
 if __name__ == '__main__':
@@ -165,12 +225,9 @@ if __name__ == '__main__':
     Text_Transformation_Colour = (255,255,255)
     Transformation_Colour = (0,0,255)
     Text_Static_Colour = (0,0,0)
+
     Button = [Round_Button(app, 'Example', 3, Static_Colour, Text_Static_Colour, Transformation_Colour, Text_Transformation_Colour) for i in range (4)]
-
-    [Button[x].connect_function(New_Function) for x in range (4)]
-
+    Button[0].connect_function(New_Function)
     Button[0].grid(row=0, column=0)
-    #Button[1].grid(row=0, column=1)
-    #Button[2].grid(row=1, column=0)
-    #Button[3].grid(row=1, column=1)
+
     app.mainloop()
