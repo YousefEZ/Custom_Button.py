@@ -163,7 +163,6 @@ class Round_Button(tk.Label):
 
     def on_enter(self,*args):
         #switches images to the transformed button.
-        print ('Entering')
         t1 = Thread(target=self.change_sc)
         t1.start()
 
@@ -182,7 +181,6 @@ class Round_Button(tk.Label):
 
     def change_tsc(self, si:int=0):
 
-
         for i in range (si, 10):
             if self.change_to_static == True:
                 self.change_to_trans = False
@@ -198,7 +196,6 @@ class Round_Button(tk.Label):
 
     def on_leave(self,*args):
         #switches back to static image.
-        print('Leaving')
         t1 = Thread(target=self.change_tsc)
         t1.start()
 
