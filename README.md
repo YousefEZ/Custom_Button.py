@@ -20,6 +20,7 @@ Intialisation:
         static_t_colour: Colour for the text when the button is static. [Tuple,(R,G,B)]
         transformation_colour: Colour for the button when cursor is over it. [Tuple,(R,G,B)]
         transformation_t_colour: Colour for the text when the cursor is over the button. [Tuple,(R,G,B)]
+        background: Sets the background colour of the Button so it can blend with the window's background
 
 
 
