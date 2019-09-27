@@ -10,7 +10,7 @@ from threading import Thread
 
 class Round_Button(tk.Label):
 
-    def __init__(self, top, text, multi, static_colour, static_t_colour, transformation_colour, transformation_t_colour):
+    def __init__(self, top, text, multi, static_colour, static_t_colour, transformation_colour, transformation_t_colour, background:str='#FFFFFF'):
 
         '''
 
@@ -21,6 +21,7 @@ class Round_Button(tk.Label):
         :param static_t_colour: Colour for the text when the button is static. [Tuple,(R,G,B)]
         :param transformation_colour: Colour for the button when cursor is over it. [Tuple,(R,G,B)]
         :param transformation_t_colour: Colour for the text when the cursor is over the button. [Tuple,(R,G,B)]
+        :param background: Sets the background colour of the Button so it can blend with the window's background
 
         '''
 
@@ -33,7 +34,7 @@ class Round_Button(tk.Label):
         self.tsc = static_t_colour
         self.ttc = transformation_t_colour
         self.multi = multi
-        self.aspect_ratio = (int(35*multi), int(10*multi)) # 3.5 : 1 (W : H)
+        self.resoltuion = (int(35*multi), int(10*multi)) # 3.5 : 1 (W : H)
         self.text = text
         self.change_to_trans = False
         self.change_to_static = False
@@ -42,7 +43,7 @@ class Round_Button(tk.Label):
         self.create_lower_button() #Creates Lower Button
         self.connect_function()
         self.configure(image=self.Images[9]) #Inserts static button images
-
+        self.configure(background=background)
         self.bind("<Enter>", self.on_enter) #Hover on capabilities
         self.bind("<Leave>", self.on_leave) #Hover off capabilities
 
@@ -54,17 +55,16 @@ class Round_Button(tk.Label):
             decrement += 1
             font = ImageFont.truetype("Assets/GentiumBasic-Bold.ttf", int(5.5 * self.multi) - decrement, encoding="unic")
             coords, Lines, line_height = self.draw_multiple_line_text(self.text, font, int(36 * self.multi), int(2 * self.multi), 12)
-            if coords[-1][1] + line_height + 5 > self.aspect_ratio[1]:
+            if coords[-1][1] + line_height + 5 > self.resoltuion[1]:
                 continue
             break
 
-        self.images = [Image.new('RGBA', (self.aspect_ratio)) for i in range (10)]
+        self.images = [Image.new('RGBA', (self.resoltuion)) for i in range (10)]
 
         # Initialising the draw the ImageDraw.Draw object
         self.image_drawer = [ImageDraw.Draw(self.images[i]) for i in range (10)]
         self.image_colours = [[self.tc[i] + ((self.sc[i]-self.tc[i])//10)*x for i in range (3)] for x in range (10)]
         self.text_colours = [[self.ttc[i] + ((self.tsc[i] - self.ttc[i]) // 10) * x for i in range(3)] for x in range(10)]
-        print (self.image_colours)
         for i in range(10):
 
             # Puts the colours in a tuple for use.
@@ -73,13 +73,13 @@ class Round_Button(tk.Label):
 
             # Creates the base for both images (Rectangles)
 
-            self.image_drawer[i].rectangle((0,0, self.aspect_ratio[0], self.aspect_ratio[1]), fill=colour)
+            self.image_drawer[i].rectangle((0,0, self.resoltuion[0], self.resoltuion[1]), fill=colour)
 
             # Create a rectangle to remove the unwanted areas of colour, and adds an elipses to give a round effect.
             # 2 on both sides for 2 images.
 
-            self.image_drawer[i].rectangle((self.aspect_ratio[0] - int(5.5 * self.multi), 0, self.aspect_ratio[0], self.aspect_ratio[1]),fill=(0, 0, 0, 0))
-            self.image_drawer[i].ellipse((self.aspect_ratio[0] - int(10 * self.multi), 0, self.aspect_ratio[0], self.aspect_ratio[1]),fill=colour)
+            self.image_drawer[i].rectangle((self.resoltuion[0] - int(5.5 * self.multi), 0, self.resoltuion[0], self.resoltuion[1]),fill=(0, 0, 0, 0))
+            self.image_drawer[i].ellipse((self.resoltuion[0] - int(10 * self.multi), 0, self.resoltuion[0], self.resoltuion[1]),fill=colour)
 
             self.image_drawer[i].rectangle((0, 0, int(5.5 * self.multi), int(10 * self.multi)), fill=(0, 0, 0, 0))
             self.image_drawer[i].ellipse((0, 0, int(10 * self.multi), int(10 * self.multi)), fill=(colour))
@@ -94,19 +94,19 @@ class Round_Button(tk.Label):
     def create_lower_button(self):
         multi_d = 0.25
         multi = self.multi  - multi_d
-        aspect_ratio = (int(35 * multi), int(10*multi))
+        resoltuion = (int(35 * multi), int(10*multi))
         decrement = -1
         while True:
             # < decrement > : Used for lowering the font size so that the text doesn't go off the screen.
             decrement += 1
             font = ImageFont.truetype("Assets/GentiumBasic-Bold.ttf", int(5.5 * multi) - decrement,encoding="unic")
             coords, Lines, line_height = self.draw_multiple_line_text(self.text, font, int(36 * multi),int(2 * multi), 12)
-            if coords[-1][1] + line_height + 5 > self.aspect_ratio[1]-(10*multi_d):
+            if coords[-1][1] + line_height + 5 > self.resoltuion[1]-(10*multi_d):
                 continue
             break
 
 
-        self.lower_button = Image.new('RGBA', (aspect_ratio))
+        self.lower_button = Image.new('RGBA', (resoltuion))
 
         # Initialising the draw the ImageDraw.Draw object
         self.lower_drawer = ImageDraw.Draw(self.lower_button)
@@ -116,29 +116,32 @@ class Round_Button(tk.Label):
 
         # Creates the base for both images (Rectangles)
 
-        self.lower_drawer.rectangle((0, 0, aspect_ratio[0], aspect_ratio[1]), fill=colour)
+        self.lower_drawer.rectangle((0, 0, resoltuion[0], resoltuion[1]), fill=colour)
 
         # Create a rectangle to remove the unwanted areas of colour, and adds an elipses to give a round effect.
         # 2 on both sides for 2 images.
 
-        self.lower_drawer.rectangle((aspect_ratio[0] - int(5.5*multi), 0, aspect_ratio[0], aspect_ratio[1]),fill=(0, 0, 0, 0))
-        self.lower_drawer.ellipse((aspect_ratio[0] - int(10*multi), 0, aspect_ratio[0], aspect_ratio[1]), fill=colour)
+        # Right side
+        self.lower_drawer.rectangle((resoltuion[0] - int(5.5*multi), 0, resoltuion[0], resoltuion[1]),fill=(0, 0, 0, 0))
+        self.lower_drawer.ellipse((resoltuion[0] - int(10*multi), 0, resoltuion[0], resoltuion[1]), fill=colour)
 
+        # Left side
         self.lower_drawer.rectangle((0, 0, int(5.5 * multi), int(10 * multi)), fill=(0, 0, 0, 0))
         self.lower_drawer.ellipse((0, 0, int(10 * multi), int(10 * multi)), fill=(colour))
 
         for x in range(len(coords)):
             self.lower_drawer.text(coords[x], Lines[x], fill=textcolour, font=font, align='center')
 
-        delta_x = (self.aspect_ratio[0] - aspect_ratio[0])//2
-        delta_y = (self.aspect_ratio[1] - aspect_ratio[1])//2
+        delta_x = (self.resoltuion[0] - resoltuion[0])//2
+        delta_y = (self.resoltuion[1] - resoltuion[1])//2
 
 
-        self.lower_button = self.lower_button.resize(size=(self.aspect_ratio[0] - delta_x*2, self.aspect_ratio[1] - delta_y*2))
+        #Perfects the size for pasting.
+        self.lower_button = self.lower_button.resize(size=(self.resoltuion[0] - delta_x*2, self.resoltuion[1] - delta_y*2))
 
-        self.Button = Image.new('RGBA', (self.aspect_ratio))
-
-        self.Button.paste(self.lower_button, (delta_x, delta_y, self.aspect_ratio[0] - delta_x, self.aspect_ratio[1] - delta_y), self.lower_button)
+        #Pasting Image ontop of transparent image with original resolution.
+        self.Button = Image.new('RGBA', (self.resoltuion))
+        self.Button.paste(self.lower_button, (delta_x, delta_y, self.resoltuion[0] - delta_x, self.resoltuion[1] - delta_y), self.lower_button)
 
         self.lower_button = ImageTk.PhotoImage(self.Button)
 
@@ -161,9 +164,17 @@ class Round_Button(tk.Label):
             Lines.append(line)
         return Coords, Lines, line_height
 
+    ## Animation Effect.
+    ## Hovering.
+
     def on_enter(self,*args):
         #switches images to the transformed button.
         t1 = Thread(target=self.change_sc)
+        t1.start()
+
+    def on_leave(self,*args):
+        #switches back to static image.
+        t1 = Thread(target=self.change_tsc)
         t1.start()
 
     def change_sc(self, si:int=9):
@@ -181,6 +192,7 @@ class Round_Button(tk.Label):
 
     def change_tsc(self, si:int=0):
 
+        self.change_to_trans = True
         for i in range (si, 10):
             if self.change_to_static == True:
                 self.change_to_trans = False
@@ -192,12 +204,6 @@ class Round_Button(tk.Label):
         if self.change_to_trans:
             self.change_to_trans = False
 
-
-
-    def on_leave(self,*args):
-        #switches back to static image.
-        t1 = Thread(target=self.change_tsc)
-        t1.start()
 
     def connect_function(self, function=lambda:None):
         #Binds the button to a function.
@@ -218,13 +224,17 @@ if __name__ == '__main__':
         print ('Functioning')
 
     app = tk.Tk()
+    Background = ('#000000')
+    app.configure(background = Background)
+
     Static_Colour = (255,0,0)
     Text_Transformation_Colour = (255,255,255)
     Transformation_Colour = (0,0,255)
     Text_Static_Colour = (0,0,0)
 
-    Button = [Round_Button(app, 'Example', 3, Static_Colour, Text_Static_Colour, Transformation_Colour, Text_Transformation_Colour) for i in range (4)]
-    Button[0].connect_function(New_Function)
-    Button[0].grid(row=0, column=0)
+
+    Button = Round_Button(app, 'Example', 3, Static_Colour, Text_Static_Colour, Transformation_Colour, Text_Transformation_Colour, Background)
+    Button.connect_function(New_Function)
+    Button.grid(row=0, column=0)
 
     app.mainloop()
