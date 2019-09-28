@@ -8,7 +8,7 @@ External Dependencies:
 
 PIL (python-imaging library)
 
-Capabiliies:
+Capabilities:
 =============
 
 + Static Colour to Transformation Colour Animation.
