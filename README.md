@@ -1,4 +1,4 @@
-# Round_Button.py
+# Custom_Button.py
 Simple button that is a more visually customisable version of a tkinter button.
 
 Main Class is called: Round_Button
