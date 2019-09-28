@@ -28,9 +28,9 @@ Intialisation:
 + static_t_colour: Colour for the text when the button is static. [Tuple,(R,G,B)]
 + transformation_colour: Colour for the button when cursor is over it. [Tuple,(R,G,B)]
 + transformation_t_colour: Colour for the text when the cursor is over the button. [Tuple,(R,G,B)]
-+ background: Sets background colour of the button (for blending with background) [Tuple,(#RGB)] DEF=#FFFFFF
-+ static_outline : Sets outline of static image. [Tuple, (R,G,B)] DEF: static_colour value
-+ trans_outline : Sets outline of transformed image. [Tuple, (R,G,B)] DEF: transformation_colour
++ background: Sets background colour of the button (for blending with background). [Tuple,(#RGB)] DEF = #FFFFFF
++ static_outline : Sets outline of static image. [Tuple, (R,G,B)] DEF = static_colour value
++ trans_outline : Sets outline of transformed image. [Tuple, (R,G,B)] DEF = transformation_colour
 
 
 
