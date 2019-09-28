@@ -10,7 +10,7 @@ from threading import Thread
 
 class Round_Button(tk.Label):
 
-    def __init__(self, top, text, multi, static_colour, static_t_colour, transformation_colour, transformation_t_colour, background:str='#FFFFFF'):
+    def __init__(self, top, text, multi, static_colour, static_t_colour, transformation_colour, transformation_t_colour, background:str='#FFFFFF', static_outline=None, trans_outline=None):
 
         '''
 
@@ -21,7 +21,9 @@ class Round_Button(tk.Label):
         :param static_t_colour: Colour for the text when the button is static. [Tuple,(R,G,B)]
         :param transformation_colour: Colour for the button when cursor is over it. [Tuple,(R,G,B)]
         :param transformation_t_colour: Colour for the text when the cursor is over the button. [Tuple,(R,G,B)]
-        :param background: Sets the background colour of the Button so it can blend with the window's background
+        :param background: Sets the background colour of the Button so it can blend with the window's background [Tuple, (RGB)] Defaults to WHITE (#FFFFFF)
+        :param static_outline: outline colour of static image. [Tuple, (RGB)] Defaults to static_colour value.
+        :param trans_outline: outline colour of transformed image. [Tuple, (RGB)] Defaults to transformation_colour value.
 
         '''
 
@@ -38,6 +40,15 @@ class Round_Button(tk.Label):
         self.text = text
         self.change_to_trans = False
         self.change_to_static = False
+
+        self.static_outline = static_outline
+        self.trans_outline = trans_outline
+        if static_outline == None:
+            self.static_outline = static_colour
+
+        if trans_outline == None:
+            self.trans_outline = transformation_colour
+
 
         self.create_custom_image() #Create static and transformed buttons
         self.create_lower_button() #Creates Lower Button
@@ -65,24 +76,28 @@ class Round_Button(tk.Label):
         self.image_drawer = [ImageDraw.Draw(self.images[i]) for i in range (10)]
         self.image_colours = [[self.tc[i] + ((self.sc[i]-self.tc[i])//10)*x for i in range (3)] for x in range (10)]
         self.text_colours = [[self.ttc[i] + ((self.tsc[i] - self.ttc[i]) // 10) * x for i in range(3)] for x in range(10)]
+        self.outline_colours = [[self.trans_outline[i] + ((self.static_outline[i] - self.trans_outline[i]) // 10) * x for i in range(3)] for x in range(10)]
         for i in range(10):
 
             # Puts the colours in a tuple for use.
             colour = (self.image_colours[i][0],self.image_colours[i][1],self.image_colours[i][2])
             textcolour = (self.text_colours[i][0], self.text_colours[i][1], self.text_colours[i][2])
+            outline = (self.outline_colours[i][0], self.outline_colours[i][1], self.outline_colours[i][2])
 
             # Creates the base for both images (Rectangles)
 
-            self.image_drawer[i].rectangle((0,0, self.resoltuion[0], self.resoltuion[1]), fill=colour)
+            self.image_drawer[i].rectangle((int(5.5 * self.multi),0, self.resoltuion[0] - int(5.5 * self.multi), self.resoltuion[1]-1), outline=outline , fill=colour)
 
             # Create a rectangle to remove the unwanted areas of colour, and adds an elipses to give a round effect.
             # 2 on both sides for 2 images.
 
-            self.image_drawer[i].rectangle((self.resoltuion[0] - int(5.5 * self.multi), 0, self.resoltuion[0], self.resoltuion[1]),fill=(0, 0, 0, 0))
-            self.image_drawer[i].ellipse((self.resoltuion[0] - int(10 * self.multi), 0, self.resoltuion[0], self.resoltuion[1]),fill=colour)
+            self.image_drawer[i].rectangle((self.resoltuion[0] - int(5.5 * self.multi), 0, self.resoltuion[0], self.resoltuion[1]-2),fill=(0, 0, 0, 0))
+            self.image_drawer[i].ellipse((self.resoltuion[0] - int(10 * self.multi), 0, self.resoltuion[0]-1, self.resoltuion[1]-2),outline=outline ,fill=colour)
 
-            self.image_drawer[i].rectangle((0, 0, int(5.5 * self.multi), int(10 * self.multi)), fill=(0, 0, 0, 0))
-            self.image_drawer[i].ellipse((0, 0, int(10 * self.multi), int(10 * self.multi)), fill=(colour))
+            self.image_drawer[i].rectangle((0, 0, int(5.5 * self.multi), int(10 * self.multi)-2), fill=(0, 0, 0, 0))
+            self.image_drawer[i].ellipse((0, 0, int(10 * self.multi), int(10 * self.multi)-2), outline=outline ,fill=(colour))
+
+            self.image_drawer[i].rectangle((int(5.5 * self.multi), 1, self.resoltuion[0] - int(5.5 * self.multi), self.resoltuion[1]-2), fill=colour)
 
 
 
@@ -113,21 +128,29 @@ class Round_Button(tk.Label):
 
         colour = (self.image_colours[0][0], self.image_colours[0][1], self.image_colours[0][2])
         textcolour = (self.text_colours[0][0], self.text_colours[0][1], self.text_colours[0][2])
+        outline = (self.outline_colours[0][0], self.outline_colours[0][1], self.outline_colours[0][2])
 
         # Creates the base for both images (Rectangles)
 
-        self.lower_drawer.rectangle((0, 0, resoltuion[0], resoltuion[1]), fill=colour)
+
+        # Create a rectangle to remove the unwanted areas of colour, and adds an elipses to give a round effect.
+        # 2 on both sides for 2 images.
+
+
+        self.lower_drawer.rectangle((0, 0, resoltuion[0], resoltuion[1]-1), outline=outline, fill=colour)
 
         # Create a rectangle to remove the unwanted areas of colour, and adds an elipses to give a round effect.
         # 2 on both sides for 2 images.
 
         # Right side
         self.lower_drawer.rectangle((resoltuion[0] - int(5.5*multi), 0, resoltuion[0], resoltuion[1]),fill=(0, 0, 0, 0))
-        self.lower_drawer.ellipse((resoltuion[0] - int(10*multi), 0, resoltuion[0], resoltuion[1]), fill=colour)
+        self.lower_drawer.ellipse((resoltuion[0] - int(10*multi), 0, resoltuion[0], resoltuion[1]), outline=outline, fill=colour)
 
         # Left side
         self.lower_drawer.rectangle((0, 0, int(5.5 * multi), int(10 * multi)), fill=(0, 0, 0, 0))
-        self.lower_drawer.ellipse((0, 0, int(10 * multi), int(10 * multi)), fill=(colour))
+        self.lower_drawer.ellipse((0, 0, int(10 * multi), int(10 * multi)), outline=outline, fill=(colour))
+
+        self.lower_drawer.rectangle((int(5.5 * multi), 1, resoltuion[0] - int(5.5*multi), resoltuion[1]-2), fill=colour)
 
         for x in range(len(coords)):
             self.lower_drawer.text(coords[x], Lines[x], fill=textcolour, font=font, align='center')
@@ -227,13 +250,15 @@ if __name__ == '__main__':
     Background = ('#000000')
     app.configure(background = Background)
 
-    Static_Colour = (255,0,0)
+    Static_Colour = (0,0,0)
     Text_Transformation_Colour = (255,255,255)
-    Transformation_Colour = (0,0,255)
-    Text_Static_Colour = (0,0,0)
+    Transformation_Colour = (0,0,0)
+    Text_Static_Colour = (125,125,125)
 
+    Static_Outline = (125,125,125)
+    Transformation_Outline = (255,255,255)
 
-    Button = Round_Button(app, 'Example', 3, Static_Colour, Text_Static_Colour, Transformation_Colour, Text_Transformation_Colour, Background)
+    Button = Round_Button(app, 'Example', 5, Static_Colour, Text_Static_Colour, Transformation_Colour, Text_Transformation_Colour, Background, Static_Outline, Transformation_Outline)
     Button.connect_function(New_Function)
     Button.grid(row=0, column=0)
 
