@@ -6,6 +6,7 @@ from tkinter import ttk
 from PIL import Image, ImageDraw, ImageFont, ImageTk, features
 import textwrap
 from time import sleep
+from queue import Queue
 from threading import Thread
 
 class Round_Button(tk.Label):
@@ -36,7 +37,7 @@ class Round_Button(tk.Label):
         self.tsc = static_t_colour
         self.ttc = transformation_t_colour
         self.multi = size
-        self.resoltuion = (int(35*multi), int(10*multi)) # 3.5 : 1 (W : H)
+        self.resoltuion = (int(35*size), int(10*size)) # 3.5 : 1 (W : H)
         self.text = text
         self.change_to_trans = False
         self.change_to_static = False
@@ -57,6 +58,10 @@ class Round_Button(tk.Label):
         self.configure(background=background)
         self.bind("<Enter>", self.on_enter) #Hover on capabilities
         self.bind("<Leave>", self.on_leave) #Hover off capabilities
+        self.queue = Queue()
+        self.Animator = Thread(target=self.Manage_Animation)
+        self.Animator.start()
+
 
     def create_custom_image(self):
 
@@ -192,13 +197,26 @@ class Round_Button(tk.Label):
 
     def on_enter(self,*args):
         #switches images to the transformed button.
-        t1 = Thread(target=self.change_sc)
-        t1.start()
+        self.Q_Dump()
+        self.queue.put('E')
+
+    def Q_Dump(self):
+        for i in range (self.queue.qsize()):
+            self.queue.get_nowait()
 
     def on_leave(self,*args):
         #switches back to static image.
-        t1 = Thread(target=self.change_tsc)
-        t1.start()
+        self.Q_Dump()
+        self.queue.put('L')
+
+    def Manage_Animation(self):
+        while True:
+            Factor = self.queue.get()
+            if Factor == 'E':
+                self.change_sc()
+            elif Factor == "L":
+                self.change_tsc()
+
 
     def change_sc(self, si:int=9):
         self.change_to_static = True
@@ -258,8 +276,26 @@ if __name__ == '__main__':
     Static_Outline = (125,125,125)
     Transformation_Outline = (255,255,255)
 
-    Button = Round_Button(app, 'Example', 5, Static_Colour, Text_Static_Colour, Transformation_Colour, Text_Transformation_Colour, Background, Static_Outline, Transformation_Outline)
+    Button = Round_Button(app, 'Login', 3, Static_Colour, Text_Static_Colour, Transformation_Colour, Text_Transformation_Colour, Background, Static_Outline, Transformation_Outline)
     Button.connect_function(New_Function)
-    Button.grid(row=0, column=0)
+    Button.grid(row=2, column=1, pady= 5, padx=10)
+
+
+    Label1 = ttk.Label(app, text='Username')
+    Label1.configure(background = Background)
+    Label1.configure(foreground=('#FFFFFF'))
+    Label1.grid(row=0,column=0, pady= 5, padx=10)
+    
+    Entry1 = ttk.Entry(app)
+    Entry1.grid(row =0, column=1, pady= 5, padx=10)
+
+    Label2 = ttk.Label(app, text='Password')
+    Label2.configure(background = Background)
+    Label2.configure(foreground = ('#FFFFFF'))
+    Label2.grid(row=1, column=0, pady= 5, padx=10)
+    
+    Entry2 = ttk.Entry(app)
+    Entry2.grid(row=1, column=1, pady= 5, padx=10)
+
 
     app.mainloop()
