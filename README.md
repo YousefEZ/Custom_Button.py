@@ -37,9 +37,10 @@ Intialisation:
 Linking a Function:
 ===================
 
+```
 Random_Function = lambda:print('Hello World')
 Button = Round_Button(root, text, 3, static_c, static_text_c, trans_c, trans_text_c, '#FFFFFF')
 Button.connect_function(Random_Function)
-
+```
 
 
