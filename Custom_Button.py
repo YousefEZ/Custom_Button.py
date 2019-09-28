@@ -10,13 +10,13 @@ from threading import Thread
 
 class Round_Button(tk.Label):
 
-    def __init__(self, top, text, multi, static_colour, static_t_colour, transformation_colour, transformation_t_colour, background:str='#FFFFFF', static_outline=None, trans_outline=None):
+    def __init__(self, top, text, size, static_colour, static_t_colour, transformation_colour, transformation_t_colour, background:str='#FFFFFF', static_outline=None, trans_outline=None):
 
         '''
 
         :param top: Top level / root. The window in which the button is going to be placed. [Tkinter Object]
         :param text: Text that is placed on the button. [String]
-        :param multi: Multiplier for the size. [Integer]
+        :param size: Multiplier for the size. [Integer]
         :param static_colour: Colour for the button when static. [Tuple,(R,G,B)]
         :param static_t_colour: Colour for the text when the button is static. [Tuple,(R,G,B)]
         :param transformation_colour: Colour for the button when cursor is over it. [Tuple,(R,G,B)]
@@ -35,7 +35,7 @@ class Round_Button(tk.Label):
         self.tc = transformation_colour
         self.tsc = static_t_colour
         self.ttc = transformation_t_colour
-        self.multi = multi
+        self.multi = size
         self.resoltuion = (int(35*multi), int(10*multi)) # 3.5 : 1 (W : H)
         self.text = text
         self.change_to_trans = False
@@ -258,7 +258,7 @@ if __name__ == '__main__':
     Static_Outline = (125,125,125)
     Transformation_Outline = (255,255,255)
 
-    Button = Round_Button(app, 'Example', 3, Static_Colour, Text_Static_Colour, Transformation_Colour, Text_Transformation_Colour, Background, Static_Outline, Transformation_Outline)
+    Button = Round_Button(app, 'Example', 5, Static_Colour, Text_Static_Colour, Transformation_Colour, Text_Transformation_Colour, Background, Static_Outline, Transformation_Outline)
     Button.connect_function(New_Function)
     Button.grid(row=0, column=0)
 
