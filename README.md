@@ -15,7 +15,7 @@ Capabilities:
 + Static Text Colour to Transformed Text Colour Animation.
 + Static Outline to Transformed Outline Colour Animation.
 + Function/Command Linking.
-+ Size Adjustable
++ Size Adjustable.
 + Background blendable.
 
 Intialisation:
