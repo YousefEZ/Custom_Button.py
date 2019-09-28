@@ -258,7 +258,7 @@ if __name__ == '__main__':
     Static_Outline = (125,125,125)
     Transformation_Outline = (255,255,255)
 
-    Button = Round_Button(app, 'Example', 5, Static_Colour, Text_Static_Colour, Transformation_Colour, Text_Transformation_Colour, Background, Static_Outline, Transformation_Outline)
+    Button = Round_Button(app, 'Example', 3, Static_Colour, Text_Static_Colour, Transformation_Colour, Text_Transformation_Colour, Background, Static_Outline, Transformation_Outline)
     Button.connect_function(New_Function)
     Button.grid(row=0, column=0)
 
