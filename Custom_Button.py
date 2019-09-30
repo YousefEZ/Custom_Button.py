@@ -91,20 +91,18 @@ class Round_Button(tk.Label):
 
             # Creates the base for both images (Rectangles)
 
-            self.image_drawer[i].rectangle((int(5.5 * self.multi),0, self.resoltuion[0] - int(5.5 * self.multi), self.resoltuion[1]-1), outline=outline , fill=colour)
+            self.image_drawer[i].rectangle((int(5.5 * self.multi),0, self.resoltuion[0] - int(5.5 * self.multi), self.resoltuion[1]-1), outline=outline, width =2, fill=colour)
 
             # Create a rectangle to remove the unwanted areas of colour, and adds an elipses to give a round effect.
             # 2 on both sides for 2 images.
 
             self.image_drawer[i].rectangle((self.resoltuion[0] - int(5.5 * self.multi), 0, self.resoltuion[0], self.resoltuion[1]-2),fill=(0, 0, 0, 0))
-            self.image_drawer[i].ellipse((self.resoltuion[0] - int(10 * self.multi), 0, self.resoltuion[0]-1, self.resoltuion[1]-2),outline=outline ,fill=colour)
+            self.image_drawer[i].ellipse((self.resoltuion[0] - int(10 * self.multi), 0, self.resoltuion[0]-1, self.resoltuion[1]-2),outline=outline, width=2, fill=colour)
 
             self.image_drawer[i].rectangle((0, 0, int(5.5 * self.multi), int(10 * self.multi)-2), fill=(0, 0, 0, 0))
-            self.image_drawer[i].ellipse((0, 0, int(10 * self.multi), int(10 * self.multi)-2), outline=outline ,fill=(colour))
+            self.image_drawer[i].ellipse((0, 0, int(10 * self.multi), int(10 * self.multi)-2), outline=outline, width=2 ,fill=(colour))
 
-            self.image_drawer[i].rectangle((int(5.5 * self.multi), 1, self.resoltuion[0] - int(5.5 * self.multi), self.resoltuion[1]-2), fill=colour)
-
-
+            self.image_drawer[i].rectangle((int(5.5 * self.multi), 2, self.resoltuion[0] - int(5.5 * self.multi), self.resoltuion[1]-3), fill=colour)
 
             for x in range (len(coords)):
                 self.image_drawer[i].text(coords[x], Lines[x], fill=textcolour, font=font, align='center')
@@ -142,20 +140,20 @@ class Round_Button(tk.Label):
         # 2 on both sides for 2 images.
 
 
-        self.lower_drawer.rectangle((0, 0, resoltuion[0], resoltuion[1]-1), outline=outline, fill=colour)
+        self.lower_drawer.rectangle((0, 0, resoltuion[0], resoltuion[1]-1), outline=outline, width=2,  fill=colour)
 
         # Create a rectangle to remove the unwanted areas of colour, and adds an elipses to give a round effect.
         # 2 on both sides for 2 images.
 
         # Right side
         self.lower_drawer.rectangle((resoltuion[0] - int(5.5*multi), 0, resoltuion[0], resoltuion[1]),fill=(0, 0, 0, 0))
-        self.lower_drawer.ellipse((resoltuion[0] - int(10*multi), 0, resoltuion[0], resoltuion[1]), outline=outline, fill=colour)
+        self.lower_drawer.ellipse((resoltuion[0] - int(10*multi), 0, resoltuion[0], resoltuion[1]), outline=outline, width=2, fill=colour)
 
         # Left side
         self.lower_drawer.rectangle((0, 0, int(5.5 * multi), int(10 * multi)), fill=(0, 0, 0, 0))
-        self.lower_drawer.ellipse((0, 0, int(10 * multi), int(10 * multi)), outline=outline, fill=(colour))
+        self.lower_drawer.ellipse((0, 0, int(10 * multi), int(10 * multi)), outline=outline, width=2, fill=(colour))
 
-        self.lower_drawer.rectangle((int(5.5 * multi), 1, resoltuion[0] - int(5.5*multi), resoltuion[1]-2), fill=colour)
+        self.lower_drawer.rectangle((int(5.5 * multi), 2, resoltuion[0] - int(5.5*multi), resoltuion[1]-3), fill=colour)
 
         for x in range(len(coords)):
             self.lower_drawer.text(coords[x], Lines[x], fill=textcolour, font=font, align='center')
@@ -285,7 +283,7 @@ if __name__ == '__main__':
     Label1.configure(background = Background)
     Label1.configure(foreground=('#FFFFFF'))
     Label1.grid(row=0,column=0, pady= 5, padx=10)
-    
+
     Entry1 = ttk.Entry(app)
     Entry1.grid(row =0, column=1, pady= 5, padx=10)
 
@@ -293,7 +291,7 @@ if __name__ == '__main__':
     Label2.configure(background = Background)
     Label2.configure(foreground = ('#FFFFFF'))
     Label2.grid(row=1, column=0, pady= 5, padx=10)
-    
+
     Entry2 = ttk.Entry(app)
     Entry2.grid(row=1, column=1, pady= 5, padx=10)
 
